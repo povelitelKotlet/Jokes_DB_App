@@ -1,0 +1,108 @@
+﻿@model Tuple<Int32, List<JokesApp.Models.ExtendedJoke>>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    @* <title>@ViewData["Title"] - JokesApp</title> *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/JokesApp.styles.css" asp-append-version="true"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index" 
+                           asp-route-id=@($"{Model.Item1}")>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Joke" asp-action="Index" 
+                           asp-route-id=@($"{Model.Item1}")>Jokes</a>
+                    </li>
+                    @if (Model.Item1 == 0)
+                    {
+                        <li class="'nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login"
+                               asp-route-id=@($"{Model.Item1}")>Log In</a>
+                        </li>
+                        <li class="'nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register"
+                               asp-route-id=@($"{Model.Item1}")>Register</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="'nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Exit"
+                               asp-route-id=@($"{Model.Item1}")>Exit</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    
+    @if(Model.Item1 != 0)
+    {
+        <a class="nav-link text-dark" asp-area="" asp-controller="Joke" asp-action="Create"
+           asp-route-id=@($"{Model.Item1}")>Create a new joke</a>
+    }
+    
+    <br/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Joke</th>
+            <th>Author</th>
+            <th>Rating</th>
+            @if (Model.Item1 != 0)
+            {
+                <th>Rate it!</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Item2)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JokeText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                @if (Model.Item1 != 0)
+                {
+                    <td>
+                        <form asp-action="RateJoke" asp-route-id=@($"{Model.Item1}")
+                              asp-route-jokeId=@($"{item.JokeId}")>
+                            <input name="score" type="number" min="1" max="5"/>
+                            <input type="submit" value="Rate it!"/>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>
+
